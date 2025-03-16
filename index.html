@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours And Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<!-- header section starts-->
+
+<header>
+
+    <div id="menu-bar" class="fas fa-bars"></div>
+
+    <a href="#home" class="logo"><span>T</span>ravel</a>
+    <nav class="navbar">
+        <a href="#home">Home</a>
+        <a href="#book">Book</a>
+        <a href="#package">Package</a>
+        <a href="#services">Services</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    
+    <div class="icon">
+        <i class="fas fa-search" id="search-btn"></i>
+        <i class="fas fa-user" id="login-btn" style="cursor: pointer;"></i> <!-- Login/Logout Icon -->
+    </div>
+    
+        <form action="" method="get" class="search-container">
+            <input type="search" id="search-input" name="query" placeholder="Search here..." required>
+            <!-- <label for="search-input" class="fas fa-search"></label>  -->
+            <div id="search-suggestions" class="search-suggestions" style="display: none;"></div>  
+        </form>
+    
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Script is running!");
+
+    const searchBtn = document.querySelector("#search-btn");
+    const searchContainer = document.querySelector(".search-container");
+    const searchInput = document.querySelector("#search-input"); 
+    const suggestionsBox = document.querySelector("#search-suggestions");
+
+    // Toggle search bar visibility when clicking search icon
+    searchBtn.addEventListener("click", function (e) {
+        e.stopPropagation(); // Prevent immediate closing when clicked
+        if (searchContainer.style.display === "none" || searchContainer.style.display === "") {
+            searchContainer.style.display = "block";
+            searchInput.focus();
+        } else {
+            searchContainer.style.display = "none";
+            suggestionsBox.style.display = "none";
+        }
+    });
+
+    const places = [
+        { name: "Mumbai", img: "./mumbai.png", link: "#mumbai" },
+        { name: "Nashik", img: "./nashik.webp", link: "#nashik" },
+        { name: "Lonavala", img: "./lonavla.jpg", link: "#lonavala" },
+        { name: "Delhi", img: "./delhi.jpg", link: "#delhi" },
+        { name: "Goa", img: "./goa.jpg", link: "#goa" },
+        { name: "Kashmir", img: "./packagekashmir.jpeg", link: "#kashmir" }
+    ];
+
+    searchInput.addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+    suggestionsBox.innerHTML = "";
+
+    if (!query) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    const filteredPlaces = places.filter(place => place.name.toLowerCase().includes(query));
+
+    if (filteredPlaces.length === 0) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    filteredPlaces.forEach(place => {
+        const div = document.createElement("div");
+        div.classList.add("suggestion-item");
+        div.innerHTML = `
+            <img src="${place.img}" alt="${place.name}" class="suggestion-img">
+            <span>${place.name}</span>
+        `;
+        div.onclick = function () {
+            searchInput.value = place.name;
+            suggestionsBox.style.display = "none";
+            searchContainer.style.display = "none"; // Hide search bar
+
+            // Remove highlight from previous selections
+            document.querySelectorAll(".highlight").forEach(el => el.classList.remove("highlight"));
+
+            // Scroll to the selected section
+            const targetSection = document.querySelector(place.link);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Add highlight effect
+                targetSection.classList.add("highlight");
+
+                // Remove highlight after 3 seconds
+                setTimeout(() => {
+                    targetSection.classList.remove("highlight");
+                }, 3000);
+            }
+        };
+        suggestionsBox.appendChild(div);
+    });
+
+    suggestionsBox.style.display = "block";
+});
+
+
+    // Close search bar when clicking outside
+    document.addEventListener("click", function (e) {
+        if (!searchContainer.contains(e.target) && !searchBtn.contains(e.target) && !searchInput.contains(e.target)) {
+            searchContainer.style.display = "none";
+            suggestionsBox.style.display = "none";
+        }
+    });
+});
+
+        </script>
+    
+        <style>
+            .highlight {
+    background-color: rgba(255, 223, 88, 0.5); /* Light yellow highlight */
+    transition: background-color 0.5s ease-in-out;
+    box-shadow: 0px 0px 10px rgba(255, 223, 88, 0.8);
+    border-radius: 10px;
+}
+
+    .search-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    border-radius: 5px; /* Fixed missing border-radius */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    transition: all 0.3s ease-in-out;
+    z-index: 1050; /* Increased z-index to prevent overlap issues */
+}
+
+.search-container input {
+    width: calc(100% - 20px); /* Stretch input */
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-suggestions {
+    position: absolute;
+    background: white;
+    width: 100%;
+    border: 1px solid #ccc;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1050;
+    display: none;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    top: calc(100% + 5px);
+    left: 0;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s;
+    background: white;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: #f0f0f0;
+}
+
+.suggestion-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.suggestion-item span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+        </style>
+    </header>
+    
+<!-- header section starts-->
+
+<!-- login form container-->
+
+<div class="login-form-container">
+    
+    <i class="fas fa-times" id="form-close"></i>
+
+    <form action="connect.php" method="post">
+        <h3>login</h3>
+        <input type="email" class="box" placeholder="enter your email" name="foremail">
+        <input type="password" class="box" placeholder="enter your password" name="forpassword">
+        <input type="submit" value="login now" class="btn" name="forsubmit">
+        <input type="checkbox" id="remember" name="forremember">
+        <label for="remember">remember me</label>
+        <p> forget password? <a href="./forgot.html">click here</a></p>
+        <p>don't have and account? <a href="./register.html">register now</a></p>
+    </form>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let loginBtn = document.getElementById("login-btn");
+
+    // Check if user is logged in
+    fetch("session_check.php")
+        .then(response => response.text())
+        .then(status => {
+            if (status.trim() === "logged_in") {
+                // Change icon to logout
+                loginBtn.classList.replace("fa-user", "fa-sign-out-alt");
+
+                loginBtn.onclick = function () {
+                    fetch("logout.php")
+                        .then(response => response.text())
+                        .then(result => {
+                            if (result.trim() === "success") {
+                                window.location.reload();
+                            }
+                        });
+                };
+            } else {
+                // Set to login icon
+                loginBtn.classList.replace("fa-sign-out-alt", "fa-user");
+
+                loginBtn.onclick = function () {
+                    document.querySelector(".login-form-container").style.display = "block";
+                };
+            }
+        });
+
+    // Close login form
+    document.getElementById("form-close").addEventListener("click", function () {
+        document.querySelector(".login-form-container").style.display = "none";
+    });
+});
+</script>
+
+<!-- home section starts-->
+
+<section class="home" id="home">
+
+    <div class="content">
+        <h3>adventure is worthwhile</h3>
+        <p>discover new places with us, adventure awaits</p>
+        <a href="./discovermore.html" class="btn">discover more</a>
+    </div>
+
+    <div class="controls">
+        <!-- Buttons to change video -->
+        <button class="vid-btn" data-video="video1.mp4"></button>
+        <button class="vid-btn" data-video="video2.mp4"></button>
+        <button class="vid-btn" data-video="video3.mp4"></button>
+        <button class="vid-btn" data-video="video4.mp4"></button>
+        <button class="vid-btn" data-video="video5.mp4"></button>
+    </div>
+
+    <div class="video-container">
+        <!-- Background video element -->
+        <video src="./images/video1.mp4" id="video-slider" loop autoplay muted></video>
+    </div>
+
+</section>
+
+<script>
+    // JavaScript to change the video when a button is clicked
+    const buttons = document.querySelectorAll('.vid-btn');
+    const video = document.getElementById('video-slider');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const videoSrc = button.getAttribute('data-video'); // Get the video source from the button's data attribute
+            video.src = './images/' + videoSrc; // Set the video source dynamically
+            video.load(); // Reload the video
+            video.play(); // Play the video
+        });
+    });
+</script>
+
+
+<!-- home section ends-->
+
+<!-- book section starts-->
+
+<section class="book" id="book">
+
+    <h1 class="heading">
+        <span>b</span>
+        <span>o</span>
+        <span>o</span>
+        <span>k</span>
+        <span class="space"></span>
+        <span>n</span>
+        <span>o</span>
+        <span>w</span>
+    </h1>
+
+    <div class="row">
+
+        <div class="image">
+            <img src="./book.png" alt="">
+        </div>
+
+        <form id="bookingForm" action="booking.php" method="POST">
+            <div class="inputBox">
+                <h3>Where to</h3>
+                <input type="text" placeholder="Place name" name="place" required>
+
+            </div>
+            <div class="inputBox">
+                <h3>How many</h3>
+                <input type="number" placeholder="Number of guests" name="guest" required>
+            </div>
+            <div class="inputBox">
+                <h3>Arrival</h3>
+                <input type="date" name="arrive" required>
+            </div>
+            <div class="inputBox">
+                <h3>Leaving</h3>
+                <input type="date" name="leaved" required>
+            </div>
+            <input type="submit" class="btn" value="book now">
+        </form>
+        
+        <script>
+            // JavaScript to submit the form when the link is clicked
+            document.getElementById('bookNowLink').addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default link behavior
+                document.getElementById('bookingForm').submit(); // Submit the form
+            });
+        </script>
+        
+    </div>
+
+</section>
+
+<!-- book section ends-->
+
+<!-- package section starts--> 
+
+<section class="package" id="package">
+
+    <h1 class="heading">
+        <span>p</span>
+        <span>a</span>
+        <span>c</span>
+        <span>k</span>
+        <span>a</span>
+        <span>g</span>
+        <span>e</span>
+    </h1>
+
+    <div class="box-container">
+
+        <div class="box" id="mumbai">
+            <img src="./mumbai.png" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> mumbai </h3>
+                <p>• Round Trip          • 4&5 Star Hotels</p>
+                <p>• Buffet Dinner       • 5 Activities</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹8,720 <span>₹10,000</span> </div>
+                <a href="./mumbai.html" class="btn">see more</a>
+                <a href="#book" class="btn" data-place="Mumbai" onclick="fillPlace('Mumbai')">book now</a>
+ <script>
+    // Function to fill the "Where to" field with the selected place
+function fillPlace(place) {
+    // Set the value of the "Where to" input field
+    document.querySelector('input[name="place"]').value = place;
+}
+
+// Check if a query parameter is present in the URL (in case the page is refreshed)
+window.onload = function() {
+    // Get the query string from the URL (e.g., ?place=mumbai)
+    const urlParams = new URLSearchParams(window.location.search);
+    const place = urlParams.get('place'); // Retrieve the value of 'place'
+
+    if (place) {
+        // If a 'place' is found, fill in the input field
+        document.querySelector('input[name="place"]').value = place;
+    }
+};
+
+ </script>
+            </div>
+        </div>
+
+        <div class="box" id="nashik">
+            <img src="./nashik.webp" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> nashik </h3>
+                <p>• Round Trip          • 3&4 Star Hotels</p>
+                <p>• Veg&Non-vegS Meals      • Trimbakeshwar</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹13,590 <span>₹15,000</span> </div>
+                <a href="./nashik.html" class="btn">see more</a>
+                <a href="#book" class="btn" data-place="Nashik" onclick="fillPlace('Nashik')">book now</a>
+            </div>
+        </div>
+
+        <div class="box" id="lonavala">
+            <img src="./lonavla.jpg" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> lonavla </h3>
+                <p>• Round Trip          • 3&4 Star Hotels</p>
+                <p>• Selective Meals      • 5 Activities</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹15,951 <span>₹18,000</span> </div>
+                <a href="./lonavala.html" class="btn">see more</a>
+
+                <a href="#book" class="btn" data-place="Lonavala" onclick="fillPlace('Lonavala')">book now</a>
+            </div>
+        </div>
+
+        <div class="box" id="delhi">
+            <img src="./delhi.jpg" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> delhi </h3>
+                <p>• Round Trip          • 3&4 Star Hotels</p>
+                <p>• Buffet Dinner      • 2 Activities</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹22,870 <span>₹25,000</span> </div>
+                <a href="./delhi.html" class="btn">see more</a>
+
+                <a href="#book" class="btn" data-place="Delhi" onclick="fillPlace('Delhi')">book now</a>
+            </div>
+        </div>
+
+        <div class="box" id="goa">
+            <img src="./goa.jpg" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> goa </h3>
+                <p>• Round Trip          • 4 Star Hotels</p>
+                <p>• Selected Meals      • 2 Activities</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹19,770 <span>₹20,0000</span> </div>
+                <a href="./goa.html" class="btn">see more</a>
+                <a href="#book" class="btn" data-place="Goa" onclick="fillPlace('Goa')">book now</a>
+            </div>
+        </div>
+
+        <div class="box" id="kashmir">
+            <img src="./packagekashmir.jpeg" alt="">
+            <div class="content">
+                <h3><i class="fas fa-map-marker-alt"></i> kashmir </h3>
+                <p>• Round Trip          • 3&4 Star Hotels</p>
+                <p>• Romantic Dinner Date      • 10 Activities</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="price"> ₹25,912 <span>₹30,000</span> </div>
+                <a href="./kashmir.html" class="btn">see more</a>
+                <a href="#book" class="btn" data-place="Kashmir" onclick="fillPlace('Kashmir')">book now</a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- package section ends-->
+
+
+<!-- service section start -->
+
+<section class="services" id="services">
+
+    <h1 class="heading">
+        <span>s</span>
+        <span>e</span>
+        <span>r</span>
+        <span>v</span>
+        <span>i</span>
+        <span>c</span>
+        <span>e</span>
+        <span>s</span>
+    </h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <i class="fas fa-hotel"></i>
+            <h3>affordable hotels</h3>
+            <p>Stay Comfortable, Spend Less at HotelA!
+                Enjoy modern rooms, free Wi-Fi, and a complimentary breakfast at Hotels—your affordable escape near top attractions and dining. Book now for a memorable stay!</p>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-utensils"></i>
+            <h3>food and drinks</h3>
+            <p>Delicious Bites & Refreshing Sips Await!
+                Savor mouthwatering dishes and signature drinks at unbeatable prices. From hearty meals to delightful cocktails, we’ve got something for every craving!</p>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-bullhorn"></i>
+            <h3>safety guide</h3>
+            <p>Your Safety, Our Priority!
+                With professional security guards on duty 24/7, we ensure a safe and secure environment for your peace of mind.</p>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-globe-asia"></i>
+            <h3>around the india</h3>
+            <p>Secure Across India, Always!
+                Our expert security guards provide 24/7 protection, ensuring safety and peace of mind wherever you are in India.</p>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-plane"></i>
+            <h3>fastest travel</h3>
+            <p>Travel Faster, Smarter!
+                Experience the quickest routes and seamless journeys with our fastest travel solutions across India. Reach your destination in no time!</p>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-hiking"></i>
+            <h3>adventures</h3>
+            <p>Unleash Your Adventurous Spirit!
+                Dive into thrilling adventures across India—from trekking majestic peaks to exploring wild forests. Your next great escape awaits!</p>
+        </div>
+
+    </div>
+
+
+</section>
+
+<!-- service section ends -->
+
+<!-- gallery section stars-->
+
+
+<section class="gallery" id="gallery">
+
+    <h1 class="heading">
+        <span>g</span>
+        <span>a</span>
+        <span>l</span>
+        <span>l</span>
+        <span>e</span>
+        <span>r</span>
+        <span>y</span>
+    </h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <img src="./mumbai.png" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./mumbai.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-2.jpg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./nashik.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery_3.jpg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./lonavala.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-4.jpg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./delhi.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery5.jpg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./goa.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-6.jpeg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="./kashmir.html" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-7.jpeg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="#" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-8.jpeg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="#" class="btn">see more</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="./gallery-9.jpeg" alt="">
+            <div class="content">
+                <h3>amazing places</h3>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem, totam!</p>
+                <a href="#" class="btn">see more</a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- gallery section ends-->
+
+<!-- review section stars-->
+
+<!-- review section ends-->
+
+<!-- contact section starts-->
+
+<section class="contact" id="contact">
+
+    <h1 class="heading">
+        <span>c</span>
+        <span>o</span>
+        <span>n</span>
+        <span>t</span>
+        <span>a</span>
+        <span>c</span>
+        <span>t</span>
+    </h1>
+
+    <div class="row">
+
+        <div class="image">
+            <img src="contact.jpg" alt="">
+        </div>
+
+        <form action="./contact.php" method="post">
+            <div class="inputBox">
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="email" placeholder="Email" name="email" required>
+            </div>
+            <div class="inputBox">
+                <input type="number" placeholder="Number" name="number" required>
+                <input type="text" placeholder="Subject" name="subject" required>
+            </div>
+            <textarea placeholder="Message" name="message" cols="30" rows="10" required></textarea>
+            <input type="submit" class="btn" value="Send Message">
+        </form>
+        
+
+    </div>
+
+</section>
+
+
+<!-- contact section ends-->
+
+
+<!-- footer section starts-->
+
+<section class="footer">
+     
+    <div class="box-container">
+
+        <div class="box">
+            <h3>about us</h3>
+            <p>Explore the World with <u><b>Pay Bits Travels !</b></u>
+                We specialize in crafting unforgettable travel experiences, offering customized tours, hassle-free bookings, and top-notch service. Discover amazing destinations with us—your trusted partner in travel!</p>
+        </div>
+        <div class="box">
+            <h3>branch locations</h3>
+            <a href="#">mumbai</a>
+            <a href="#">nashik</a>
+            <a href="#">pune</a>
+            <a href="#">delhi</a>
+        </div>
+        <div class="box">
+            <h3>quick links</h3>
+            <a href="#home">home</a>
+            <a href="#book">book</a>
+            <a href="#package">package</a>
+            <a href="#services">services</a>
+            <a href="#gallery">gallery</a>
+            <a href="#contact">contact</a>
+        </div>
+        <div class="box">
+            <h3>follow us</h3>
+            <a href="#">facebook</a>
+            <a href="#">instagram</a>
+            <a href="#">twitter</a>
+            <a href="#">linkedin</a>
+        </div>
+
+    </div>
+
+    <h1 class="credit"> created by <span> mr. Lokesh Mane </span> | all rights reserved !</h1>
+</section>
+
+
+<!-- footer section ends-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="script.js"></script>
+    
+</body>
+</html>
